@@ -8,6 +8,7 @@ void Print(int arr[], const int n);
 
 int* push_back(int arr[], int& n, int value);
 int* push_front(int arr[], int& n, int value);
+
 int* pop_back(int arr[], int& n);
 
 void main()
