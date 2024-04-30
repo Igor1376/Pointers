@@ -3,19 +3,90 @@
 using namespace std;
 #define tab "\t"
 
+void FillRand(int arr[], const int n);
+void Print(int arr[], const int n);
+
+int* push_back(int arr[], int& n, int value);
+int* push_front(int arr[], int& n, int value);
+int* pop_back(int arr[], int& n);
+
 void main()
 {
 	setlocale(LC_ALL, "");
-	int n = 5;
-	cout << "¬ведите размер массива"; cin >> n;
+	int n;
+	cout << "¬ведите размер массива: "; cin >> n;
 	int* arr = new int[n];
+
+	FillRand(arr, n);
+	Print(arr, n);
+
+	int value;
+	cout << "¬ведите добавл€емое число: "; cin >> value;
+	arr = push_back(arr, n, value);
+	Print(arr, n);
+	cout << "¬ведите добавл€емое число: "; cin >> value;
+	arr = push_front(arr, n, value);
+	Print(arr, n);
+
+	arr = pop_back(arr, n);
+	Print(arr, n);
+
+	delete[] arr;
+
+}
+
+void FillRand(int arr[], const int n)
+{
 	for (int i = 0; i < n; i++)
 	{
 		*(arr + i) = rand() % 100; //обращение к элементам массива через арифметику указателей и  оператор разыменовани€
 	}
+}
+void Print(int arr[], const int n)
+{
+
 	for (int i = 0; i < n; i++)
 	{
 		cout << arr[i] << tab; // обращение к элементам массива через оператор индексировани€ - []
 	}
 	cout << endl;
+}
+int* push_back(int arr[], int& n, int value)
+{
+	// —оздаем буфеный массив нужного размера:
+	int* buffer = new int[n + 1];
+	// копируем значени€ из исходного маассива в буферный:
+	for (int i = 0; i < n; i++)
+	{
+		buffer[i] = arr[i];
+	}
+	// удал€ем исходный массив
+	delete[] arr;
+	// подмен€ем адрес исходного массива адресом нового массива
+	arr = buffer;
+	// только после этого в конце массива по€вл€тс€ свободное место, куда можно добавить значение
+	arr[n] = value;
+	n++;
+	//Print(arr, n);
+	return arr;
+
+}
+int* push_front(int arr[], int& n, int value)
+{
+	int* buffer = new int[n + 1];
+	for (int i = 0; i < n; i++)
+	{
+		buffer[i + 1] = arr[i];
+	}
+	delete[] arr;
+	buffer[0] = value;
+	n++;
+	return buffer;
+}
+int* pop_back(int arr[], int& n)
+{
+	int* buffer = new int[--n];
+	for (int i = 0; i < n; i++)buffer[i] = arr[i];
+	delete[] arr;
+	return buffer;
 }
