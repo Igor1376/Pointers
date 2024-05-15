@@ -22,10 +22,15 @@ int* push_front(int arr[], int& n, int value);
 int* pop_back(int arr[], int& n);
 
 int** push_row_back(int** arr, int& rows, const int cols);
+int** pop_row_back(int** arr, int& rows, const int cols);
+
+void push_col_back(int** arr, const int rows, int& cols);
+
+void push_col_front(int** arr, const int rows, int& cols);
 
 //#define DYNAMIC_MEMORY_1
-//#define DYNAMIC_MEMORY_2
-#define PERFOMANCE_CHECK
+#define DYNAMIC_MEMORY_2
+//#define PERFOMANCE_CHECK
 
 
 void main()
@@ -68,6 +73,15 @@ void main()
 
 	arr = push_row_back(arr, rows, cols);
 	FillRand(arr[rows - 1], cols, 100, 1000);
+	Print(arr, rows, cols);
+	
+	arr = pop_row_back(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	push_col_back(arr, rows, cols);
+	Print(arr, rows, cols);
+
+	push_col_front(arr, rows, cols);
 	Print(arr, rows, cols);
 	
 	Clear(arr, rows);
@@ -202,7 +216,7 @@ int* pop_back(int arr[], int& n)
 
 int** push_row_back(int** arr, int& rows, const int cols)
 {
-	//1) Создаем буферный масси указателей нужного размера:
+	//1) Создаем буферный массив указателей нужного размера:
 	int** buffer = new int* [rows+1];
 
 	//2) Копируем строки из исходного массива в массив указателей:
@@ -217,4 +231,43 @@ int** push_row_back(int** arr, int& rows, const int cols)
 	//5) После добавления строки в массив, количество его строк увеличивается:
 	rows++;
 	return buffer;
+}
+int** pop_row_back(int** arr, int& rows, const int cols)
+{
+	
+	int** buffer = new int* [--rows];
+	for (int i = 0; i < rows; i++)buffer[i] = arr[i];
+	delete[] arr[rows]; // !!!Удаляем удаляемую строку из памяти
+	delete[] arr;
+	return buffer;
+}
+void push_col_back(int** arr, const int rows, int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		//создаем буфферную строку
+		int* buffer = new int[cols + 1] {};
+		// копируем значения из исходной строки в буферную:
+		for(int j = 0; j < cols; j++)buffer[j] = arr[i][j];
+		//удалем исходую строку:
+		delete[] arr[i];
+		//подменяем адрес строки в массиве указателей
+		arr[i] = buffer;
+	}
+	cols++;
+}
+void push_col_front(int** arr, const int rows, int& cols)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		//создаем буфферную строку
+		int* buffer = new int[1 + cols] {};
+		// копируем значения из исходной строки в буферную:
+		for (int j = 0; j < cols; j++)buffer[j+1] = arr[i][j];
+		//удалем исходую строку:
+		delete[] arr[i];
+		//подменяем адрес строки в массиве указателей
+		arr[i] = buffer;
+	}
+	++cols;
 }
