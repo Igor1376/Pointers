@@ -37,8 +37,8 @@ void push_col_back(T** arr, const int rows, int& cols);
 
 void push_col_front(int** arr, const int rows, int& cols);
 
-#define DYNAMIC_MEMORY_1
-//#define DYNAMIC_MEMORY_2
+//#define DYNAMIC_MEMORY_1
+#define DYNAMIC_MEMORY_2
 //#define PERFOMANCE_CHECK
 
 
@@ -298,7 +298,7 @@ void push_col_front(int** arr, const int rows, int& cols)
 	for (int i = 0; i < rows; i++)
 	{
 		//создаем буфферную строку
-		int* buffer = new int[1 + cols] {};
+		int* buffer = new int[cols+1] {};
 		// копируем значения из исходной строки в буферную:
 		for (int j = 0; j < cols; j++)buffer[j+1] = arr[i][j];
 		//удалем исходую строку:
