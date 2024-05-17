@@ -7,7 +7,8 @@ using std::endl;
 
 #define tab "\t"
 
-int** Allocate(const int rows, const int cols);
+template<typename T>
+T** Allocate(const int rows, const int cols);
 void Clear(int** arr, const int rows);
 
 void FillRand(int arr[], const int n, int minRand=0, int maxRand=100);
@@ -37,7 +38,7 @@ void push_col_back(T** arr, const int rows, int& cols);
 
 void push_col_front(int** arr, const int rows, int& cols);
 
-//#define DYNAMIC_MEMORY_1
+//define DYNAMIC_MEMORY_1
 #define DYNAMIC_MEMORY_2
 //#define PERFOMANCE_CHECK
 
@@ -49,7 +50,7 @@ void main()
 #ifdef DYNAMIC_MEMORY_1
 	int n;
 	cout << "Введите размер массива: "; cin >> n;
-	typedef char DataType;
+	typedef double DataType;
 	DataType* arr = new DataType[n];
 
 	FillRand(arr, n);
@@ -76,7 +77,8 @@ void main()
 	cout << "Введите количество строк: "; cin >> rows;
 	cout << "Введите количество элеметнов строк: "; cin >> cols;
 
-	int** arr = Allocate(rows, cols);
+	typedef int DataType;
+	DataType** arr = Allocate<DataType>(rows, cols);
 
 	FillRand(arr, rows, cols);
 	Print(arr, rows, cols);
@@ -118,14 +120,15 @@ void main()
 #endif // PERFOMANCE_CHECK
 
 }
-int** Allocate(const int rows, const int cols)
+template<typename T>
+T** Allocate(const int rows, const int cols)
 {
 	//1) создаем массив указателей:
-	int** arr = new int*[rows];
+	T** arr = new T*[rows];
 	//2) выделяем память под строки:
 	for (int i = 0; i < rows; i++)
 	{
-		arr[i] = new int[cols] {};
+		arr[i] = new T [cols] {};
 	}
 	return arr;
 }
@@ -261,7 +264,7 @@ T** push_row_back(T** arr, int& rows, const int cols)
 	delete[] arr;
 
 	//4) Создаем строку и добавляем ее в массив:
-	buffer[rows] = new int[cols] {};
+	buffer[rows] = new T[cols] {};
 
 	//5) После добавления строки в массив, количество его строк увеличивается:
 	rows++;
@@ -283,7 +286,7 @@ void push_col_back(T** arr, const int rows, int& cols)
 	for (int i = 0; i < rows; i++)
 	{
 		//создаем буфферную строку
-		int* buffer = new int[cols + 1] {};
+		T* buffer = new T[cols + 1] {};
 		// копируем значения из исходной строки в буферную:
 		for(int j = 0; j < cols; j++)buffer[j] = arr[i][j];
 		//удалем исходую строку:
