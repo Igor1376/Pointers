@@ -8,9 +8,9 @@ using std::endl;
 #define tab "\t"
 
 template<typename T>
-T** Allocate(const int rows, const int cols);
+T** Allocate( int rows,  int cols);
 template<typename T>
-void Clear(T** arr, const int rows);
+void clear(T** arr, const int rows);
 
 void FillRand(int arr[], const int n, int minRand=0, int maxRand=100);
 void FillRand(double arr[], const int n, int minRand=0, int maxRand=100);
@@ -45,9 +45,9 @@ T** pop_row_back(T** arr, int& rows, const int cols);
 template<typename T>
 void push_col_back(T** arr, const int rows, int& cols);
 template<typename T>
-void push_col_front(T** arr, const int rows, int& cols);
+T** push_col_front(T** arr, const int rows, int& cols);
 template<typename T>
-void insert_col(T** arr, const int rows, int& cols, int icol);
+T** insert_col(T** arr, const int rows, int& cols, int icol);
 
 template<typename T>
 T** pop_col_back(T** arr, const int rows, int& cols);
@@ -130,7 +130,7 @@ void main()
 	cout << "Введите номер удаления: "; cin >> ecol;
 	arr=erase_col(arr, rows, cols, ecol);
 
-	Clear(arr, rows);
+	clear(arr, rows);
 	
 #endif // DYNAMIC_MEMORY_2
 #ifdef PERFOMANCE_CHECK
@@ -155,7 +155,7 @@ void main()
 
 }
 template<typename T>
-T** Allocate(const int rows, const int cols)
+T** Allocate( int rows, int cols)
 {
 	//1) создаем массив указателей:
 	T** arr = new T*[rows];
@@ -167,7 +167,7 @@ T** Allocate(const int rows, const int cols)
 	return arr;
 }
 template<typename T>
-void Clear(T** arr, const int rows)
+void clear(T** arr, const int rows)
 {
 	//1)Сначала удаляем строки:
 	for(int i = 0; i < rows; i++)
@@ -341,31 +341,39 @@ void push_col_back(T** arr, const int rows, int& cols)
 	cols++;
 }
 template<typename T>
-void push_col_front(T** arr, const int rows, int& cols)
+T** push_col_front(T** arr, const int rows, int& cols)
 {
 	for (int i = 0; i < rows; i++)
 	{
-		int** buff = allocate(rows, ++cols);
+		int* buffer = new int[cols + 1] {};
+		for (int j = 0; j < cols; j++)buffer[j + 1] = arr[i][j];
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	cols++;
+	/*for (int i = 0; i < rows; i++)
+	{
+		T** buff = Allocate<T>(rows, ++cols);
 		for (int i = 0; i < rows; i++)
 		{
-			for (int j = 0; j < cols - 1; j++)buffer[i][j + 1] = arr[i][j];
+			for (int j = 0; j < cols - 1; j++)buff[i][j + 1] = arr[i][j];
 			buff[i][0] = rand() % 100;
 		}
 		clear(arr, rows);
 		return buff;
 
 	}
-	++cols;
+	++cols;*/
 }
 template<typename T>
-void insert_col(T** arr, const int rows, int& cols, int icol)
+T** insert_col(T** arr, const int rows, int& cols, int icol)
 {
-	T** buffer = allocate(rows, ++cols);
+	T** buffer = Allocate<T>(rows, ++cols);
 	for (int i = 0; i < rows; i++)
 	{
-		for (int j = 0; j < cols, j++)
+		for (int j = 0; j < cols; j++)
 		{
-			if (int >= icol - 1)buffer[i][j + 1] = arr[i][j];
+			if ( j >= icol - 1)buffer[i][j + 1] = arr[i][j];
 			else buffer[i][j] = arr[i][j];
 			if (j == icol - 1)buffer[i][j] = 0;
 		}
@@ -376,31 +384,31 @@ void insert_col(T** arr, const int rows, int& cols, int icol)
 template<typename T>
 T** pop_col_back(T** arr, const int rows, int& cols)
 {
-	T** buffer = allocate(rows, --cols);
+	T** buffer = Allocate<T>(rows, --cols);
 	for (int i = 0; i < rows; i++)
-		for (int J = 0; j < cols; j++)buffer[i][j] = ar[i][j];
+		for (int j = 0; j < cols; j++)buffer[i][j] = arr[i][j];
 	clear(arr, rows);
 	return buffer;
 }
 template<typename T>
 T** pop_col_front(T** arr, const int rows, int& cols)
 {
-	T** buffer = allocate(rows, --cols);
+	T** buffer = Allocate<T>(rows, --cols);
 	for (int i = 0; i < rows; i++)
-		for (int J = 0; j < cols; j++)buffer[i][j] = ar[i][j];
+		for (int j = 0; j < cols; j++)buffer[i][j] = arr[i][j];
 	clear(arr, rows);
 	return buffer;
 }
 template<typename T>
 T** erase_col(T** arr, const int rows, int& cols, int ecol)
 {
-	T** buffer = allocate(rows, --cols);
 	for (int i = 0; i < rows; i++)
-		for (int J = 0; j < cols; j++)
-		{
-			if (j >= ecol - 1)buffer[i][j] = ar[i][j + 1];
-			else buffer[i][j] = ar[i][j];
-		}
-	clear(arr, rows);
-	return buffer;
+	{
+		int* buffer = new int[cols - 1];
+		for (int j = 0; j < cols - 1; j++)
+			buffer[j] = (j < ex ? arr[i][j] : arr[i][j + 1]);
+		delete[] arr[i];
+		arr[i] = buffer;
+	}
+	cols--;
 }
